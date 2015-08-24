@@ -1,8 +1,8 @@
-*AnsiEsc.txt*	Ansi Escape Sequence Visualization		Nov 19, 2012
+*AnsiEsc.txt*	Ansi Escape Sequence Visualization		Jan 10, 2015
 
 Author:  Charles E. Campbell  <NdrOchip@ScampbellPfamily.AbizM>
 	  (remove NOSPAM from Campbell's email first)
-Copyright: (c) 2004-2012 by Charles E. Campbell		*AnsiEsc-copyright*
+Copyright: (c) 2004-2014 by Charles E. Campbell		*AnsiEsc-copyright*
            The VIM LICENSE applies to AnsiEsc.vim and AnsiEsc.txt
            (see |copyright|) except use "AnsiEsc" instead of "Vim".
 	   No warranty, express or implied.  Use At-Your-Own-Risk.
@@ -33,6 +33,7 @@ Copyright: (c) 2004-2012 by Charles E. Campbell		*AnsiEsc-copyright*
 		suppressed.  If the sequences aren't suppressed, you need to
 		improve your colorscheme!
 
+								*:AnsiEsc*
 	USAGE~
 		:AnsiEsc   -- toggles Ansi escape sequence highlighting
 		:AnsiEsc!  -- rebuilds highlighting for new/removed three
@@ -93,6 +94,40 @@ White   [37;40mW[m  [37;41mW[m  [37;42mW[m  [37;43mW[m  [37;44mW[m   
         [30;48;5;22m\   /[m
          [30;48;5;22m\ /[m
 
+	PROBLEM WITH EMBEDDING:
+
+		AnsiEsc plugin highlighting cannot be embedded in another
+		syntax language.
+
+		AnsiEsc uses the syntax highlighting engine, so it is
+		effectively another syntax highlighting language.  But,
+		there are major differences:
+
+			* It supports being turned on and off
+
+			* AnsiEsc is not a syntax highlighting file, it
+			  is a plugin
+
+			* AnsiEsc dynamically determines some syntax
+			  highlighting by analyzing what's needed in the
+			  current file.
+
+		To do a syntax highlighting file would involve an inordinate
+		quantity of permutations, resulting in a file that would take
+		much time to load (about a half hour with only a partially
+		complete set of permutations on my system).
+
+		Normally to embed a syntax highlighting language in another
+		would involve a pair of syntax highlighting commands such as:
+
+		  syn include @AnsiEsc
+		  syn region ... defines the region where AnsiEsc
+		  \              highlighting is to occur ...  contains=@AnsiEsc
+
+		placed in the other syntax file's definitions.  That won't
+		work with AnsiEc because, again, AnsiEsc is not a syntax
+		highlighting file.
+
 
 ==============================================================================
 3. AnsiEsc History					*AnsiEsc-history* {{{1
@@ -100,6 +135,13 @@ White   [37;40mW[m  [37;41mW[m  [37;42mW[m  [37;43mW[m  [37;44mW[m   
 			  definition in a no-conceal-support if block.
 			  Fixed.
 	Apr 17, 2012	* (Ingo Karkat) support for the "reverse" attribute
+	May 13, 2014	* (Jason Schmidt) reported that <esc>[39m didn't work.
+			  This means revert to default foreground.  Similarly,
+			  <esc>[49m didn't work (which means revert to default
+			  background).
+	Dec 11, 2014	* Implemented implicit foreground/background
+	Jan 10, 2015	* (Evgeny Lukianchikov) provided XUbuntu support for
+			  no-ansi-sequence (AnsiNone)
   v12	Jul 23, 2010	* changed conc to |'cole'| to correspond to vim 7.3's
 			  change
 			* for menus, &go =~# used to insure correct case
